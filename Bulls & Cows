@@ -47,12 +47,12 @@ def main():
 
     while True:
         guess = input("Enter a number: ")
+        attempts += 1  # Přesunuto sem, aby se započítávaly všechny pokusy
         is_valid, error_message = validate_guess(guess)
         if not is_valid:
             print(error_message)
             continue
 
-        attempts += 1
         bulls, cows = count_bulls_and_cows(secret_number, guess)
         if bulls == 4:
             end_time = time.time()
@@ -75,3 +75,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
