@@ -1,0 +1,77 @@
+"""
+projekt_2.py: druhý projekt do Engeto Online Python Akademie
+author: David Trnka
+email: davidtrnka@hotmail.com
+discord: davidtrnka
+"""
+
+import random
+import time
+
+def generate_secret_number():
+    """Generates a random 4-digit number with unique digits and does not start with 0."""
+    digits = list("123456789")
+    random.shuffle(digits)
+    secret_number = digits.pop(0)
+    digits.append("0")
+    random.shuffle(digits)
+    secret_number += ''.join(digits[:3])
+    return secret_number
+
+def validate_guess(guess):
+    """Validates the user's guess ensuring it's a 4-digit number with unique digits."""
+    if len(guess) != 4 or not guess.isdigit():
+        return False, "The input must be exactly 4 digits."
+    if guess[0] == '0':
+        return False, "The number cannot start with 0."
+    if len(set(guess)) != 4:
+        return False, "The digits must be unique."
+    return True, ""
+
+def count_bulls_and_cows(secret, guess):
+    """Counts the number of bulls and cows in the user's guess."""
+    bulls = sum(1 for s, g in zip(secret, guess) if s == g)
+    cows = sum(1 for g in guess if g in secret) - bulls
+    return bulls, cows
+
+def main():
+    print("Hi there!")
+    print("-" * 47)
+    print("I've generated a random 4 digit number for you.")
+    print("Let's play a bulls and cows game.")
+    print("-" * 47)
+
+    secret_number = generate_secret_number()
+    attempts = 0
+    start_time = time.time()
+
+    while True:
+        guess = input("Enter a number: ")
+        attempts += 1  # Přesunuto sem, aby se započítávaly všechny pokusy
+        is_valid, error_message = validate_guess(guess)
+        if not is_valid:
+            print(error_message)
+            continue
+
+        bulls, cows = count_bulls_and_cows(secret_number, guess)
+        if bulls == 4:
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            print(f"Correct, you've guessed the right number in {attempts} guesses!")
+            if attempts <= 5:
+                performance = "amazing"
+            elif attempts <= 10:
+                performance = "average"
+            else:
+                performance = "not so good"
+            print(f"That's {performance}.")
+            print(f"You took {elapsed_time:.2f} seconds.")
+            break
+        else:
+            bull_word = "bull" if bulls == 1 else "bulls"
+            cow_word = "cow" if cows == 1 else "cows"
+            print(f"{bulls} {bull_word}, {cows} {cow_word}")
+            print("-" * 47)
+
+if __name__ == "__main__":
+    main()
